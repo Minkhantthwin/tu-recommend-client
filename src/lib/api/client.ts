@@ -1,4 +1,8 @@
-import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { env } from "@/config/env";
 import { STORAGE_KEYS } from "@/lib/constants";
 
@@ -28,7 +32,7 @@ apiClient.interceptors.request.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -38,7 +42,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config;
-    
+
     // Handle 401 Unauthorized - token expired
     if (error.response?.status === 401 && originalRequest) {
       // Clear tokens and redirect to login
@@ -46,12 +50,14 @@ apiClient.interceptors.response.use(
         localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
         localStorage.removeItem(STORAGE_KEYS.USER);
+        // Also clear cookie to prevent middleware redirecting back to dashboard
+        document.cookie = "tu-access-token=; Path=/; Max-Age=0; SameSite=Lax";
         window.location.href = "/login";
       }
     }
-    
+
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

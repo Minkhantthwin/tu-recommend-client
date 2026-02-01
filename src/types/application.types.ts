@@ -8,42 +8,42 @@ import { User } from "./user.types";
 export interface Application {
   id: string;
   userId: string;
-  
+
   // Program choices (up to 3)
   firstChoiceId: number;
   secondChoiceId?: number | null;
   thirdChoiceId?: number | null;
-  
+
   // Relationships
   firstChoice?: Program;
   secondChoice?: Program | null;
   thirdChoice?: Program | null;
-  
+
   // Status
   status: ApplicationStatus;
-  
+
   // Declaration
   declarationAccepted: boolean;
   declarationDate?: string | null;
-  
+
   // Documents
   transcriptUrl?: string | null;
   certificateUrl?: string | null;
   photoUrl?: string | null;
   recommendationUrl?: string | null;
-  
+
   // Review info
   reviewedBy?: string | null;
   reviewedAt?: string | null;
   reviewNotes?: string | null;
-  
+
   // Accepted program (if approved)
   acceptedProgramId?: number | null;
   acceptedProgram?: Program | null;
-  
+
   // User relation
   user?: User;
-  
+
   createdAt: string;
   updatedAt: string;
   submittedAt?: string | null;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LoginForm } from "@/components/forms/login-form";
 
 export const metadata = {
   title: "Login",
@@ -14,11 +15,8 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* Login form placeholder */}
       <div className="rounded-lg border p-6">
-        <p className="text-center text-muted-foreground">
-          Login form will be implemented here
-        </p>
+        <LoginForm />
       </div>
 
       <div className="text-center text-sm">

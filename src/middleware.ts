@@ -4,9 +4,6 @@ import type { NextRequest } from "next/server";
 // Public paths that don't require authentication
 const publicPaths = ["/", "/login", "/register", "/forgot-password"];
 
-// Admin-only paths
-const adminPaths = ["/admin"];
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -15,12 +12,7 @@ export function middleware(request: NextRequest) {
 
   // Check if the current path is public
   const isPublicPath = publicPaths.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  );
-
-  // Check if the current path is for admin
-  const isAdminPath = adminPaths.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
 
   // If user is not authenticated and trying to access protected route

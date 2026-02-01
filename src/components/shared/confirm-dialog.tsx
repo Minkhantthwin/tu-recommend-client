@@ -1,9 +1,15 @@
 "use client";
 
 import {
-  AlertTriangle,
-  type LucideIcon,
-} from "lucide-react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, type LucideIcon, Loader2 } from "lucide-react";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -30,59 +36,49 @@ export function ConfirmDialog({
   onConfirm,
   isLoading = false,
 }: ConfirmDialogProps) {
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50"
-        onClick={() => onOpenChange(false)}
-      />
-
-      {/* Dialog */}
-      <div className="relative z-50 w-full max-w-md rounded-lg border bg-background p-6 shadow-lg">
-        <div className="flex items-start gap-4">
-          <div
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${
-              variant === "destructive"
-                ? "bg-red-100 text-red-600 dark:bg-red-900/30"
-                : "bg-primary/10 text-primary"
-            }`}
-          >
-            <Icon className="h-5 w-5" />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <div className="flex items-center gap-4">
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+                variant === "destructive"
+                  ? "bg-red-100 text-red-600 dark:bg-red-900/30"
+                  : "bg-primary/10 text-primary"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+            </div>
+            <div className="flex flex-col gap-1 text-left">
+              <DialogTitle>{title}</DialogTitle>
+              {description && (
+                <DialogDescription>
+                  {description}
+                </DialogDescription>
+              )}
+            </div>
           </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold">{title}</h3>
-            {description && (
-              <p className="mt-2 text-sm text-muted-foreground">
-                {description}
-              </p>
-            )}
-          </div>
-        </div>
+        </DialogHeader>
 
-        <div className="mt-6 flex justify-end gap-3">
-          <button
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
-            className="rounded-md border px-4 py-2 text-sm font-medium hover:bg-accent"
           >
             {cancelText}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={variant === "destructive" ? "destructive" : "default"}
             onClick={onConfirm}
             disabled={isLoading}
-            className={`rounded-md px-4 py-2 text-sm font-medium text-white ${
-              variant === "destructive"
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-primary hover:bg-primary/90"
-            }`}
           >
-            {isLoading ? "Loading..." : confirmText}
-          </button>
-        </div>
-      </div>
-    </div>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {confirmText}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

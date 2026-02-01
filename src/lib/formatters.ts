@@ -1,9 +1,18 @@
-import { format, formatDistance, formatRelative, isValid, parseISO } from "date-fns";
+import {
+  format,
+  formatDistance,
+  formatRelative,
+  isValid,
+  parseISO,
+} from "date-fns";
 
 /**
  * Format a date to a readable string
  */
-export function formatDate(date: Date | string, formatStr: string = "PPP"): string {
+export function formatDate(
+  date: Date | string,
+  formatStr: string = "PPP",
+): string {
   const parsedDate = typeof date === "string" ? parseISO(date) : date;
   if (!isValid(parsedDate)) return "Invalid date";
   return format(parsedDate, formatStr);

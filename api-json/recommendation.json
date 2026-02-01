@@ -1,0 +1,1610 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "TU-Recommend API - Recommendation Service",
+    "version": "1.0.0",
+    "description": "University, Program, and Recommendation endpoints",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter JWT token"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "example": 100
+          },
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 10
+          }
+        }
+      },
+      "MatriculationResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "examYear": {
+            "type": "integer",
+            "example": 2025
+          },
+          "rollNumber": {
+            "type": "string",
+            "example": "12345"
+          },
+          "schoolName": {
+            "type": "string",
+            "example": "BEHS No. 1 Yangon"
+          },
+          "schoolTownship": {
+            "type": "string",
+            "example": "Mingalar Taung Nyunt"
+          },
+          "schoolRegion": {
+            "type": "string",
+            "example": "Yangon"
+          },
+          "myanmar": {
+            "type": "integer",
+            "example": 85
+          },
+          "english": {
+            "type": "integer",
+            "example": 78
+          },
+          "mathematics": {
+            "type": "integer",
+            "example": 92
+          },
+          "physics": {
+            "type": "integer",
+            "example": 88
+          },
+          "chemistry": {
+            "type": "integer",
+            "example": 82
+          },
+          "biology": {
+            "type": "integer",
+            "nullable": true,
+            "example": 80
+          },
+          "totalScore": {
+            "type": "integer",
+            "example": 505
+          },
+          "totalMarks": {
+            "type": "integer",
+            "example": 600
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "University": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string",
+            "example": "Technological University (Thanlyin)"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "example": "နည်းပညာတက္ကသိုလ် (သန်လျင်)",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "example": "TU-Thanlyin",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "example": "Thanlyin Township"
+          },
+          "region": {
+            "type": "string",
+            "example": "Yangon",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UniversityWithPrograms": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "programs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Program"
+            }
+          }
+        }
+      },
+      "CreateUniversity": {
+        "type": "object",
+        "required": [
+          "name",
+          "location"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Technological University (Yangon)"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "example": "နည်းပညာတက္ကသိုလ် (ရန်ကုန်)"
+          },
+          "code": {
+            "type": "string",
+            "example": "TU-Yangon"
+          },
+          "location": {
+            "type": "string",
+            "example": "Yangon"
+          },
+          "region": {
+            "type": "string",
+            "example": "Yangon"
+          },
+          "description": {
+            "type": "string"
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "logoUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "UpdateUniversity": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nameMyanmar": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "logoUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "Program": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "universityId": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string",
+            "example": "Electronic and Communication Engineering"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "example": "အီလက်ထရောနစ်နှင့် ဆက်သွယ်ရေးအင်ဂျင်နီယာ",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "example": "EC",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "minScore": {
+            "type": "integer",
+            "example": 480
+          },
+          "quota": {
+            "type": "integer",
+            "example": 60,
+            "nullable": true
+          }
+        }
+      },
+      "ProgramWithUniversity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "universityId": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "minScore": {
+            "type": "integer"
+          },
+          "quota": {
+            "type": "integer",
+            "nullable": true
+          },
+          "university": {
+            "$ref": "#/components/schemas/University"
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgramRequirement"
+            }
+          }
+        }
+      },
+      "CreateProgram": {
+        "type": "object",
+        "required": [
+          "universityId",
+          "name",
+          "minScore"
+        ],
+        "properties": {
+          "universityId": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Computer Engineering"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "example": "ကွန်ပျူတာအင်ဂျင်နီယာ"
+          },
+          "code": {
+            "type": "string",
+            "example": "CE"
+          },
+          "description": {
+            "type": "string"
+          },
+          "minScore": {
+            "type": "integer",
+            "example": 450
+          },
+          "quota": {
+            "type": "integer",
+            "example": 50
+          }
+        }
+      },
+      "UpdateProgram": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nameMyanmar": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "minScore": {
+            "type": "integer"
+          },
+          "quota": {
+            "type": "integer"
+          }
+        }
+      },
+      "ProgramRequirement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "programId": {
+            "type": "integer"
+          },
+          "myanmar": {
+            "type": "integer",
+            "nullable": true
+          },
+          "english": {
+            "type": "integer",
+            "nullable": true
+          },
+          "mathematics": {
+            "type": "integer",
+            "nullable": true
+          },
+          "physics": {
+            "type": "integer",
+            "nullable": true
+          },
+          "chemistry": {
+            "type": "integer",
+            "nullable": true
+          },
+          "biology": {
+            "type": "integer",
+            "nullable": true
+          },
+          "minTotalScore": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "CreateProgramRequirement": {
+        "type": "object",
+        "required": [
+          "programId"
+        ],
+        "properties": {
+          "programId": {
+            "type": "integer",
+            "example": 1
+          },
+          "myanmar": {
+            "type": "integer",
+            "example": 50
+          },
+          "english": {
+            "type": "integer",
+            "example": 50
+          },
+          "mathematics": {
+            "type": "integer",
+            "example": 70
+          },
+          "physics": {
+            "type": "integer",
+            "example": 65
+          },
+          "chemistry": {
+            "type": "integer",
+            "example": 60
+          },
+          "biology": {
+            "type": "integer"
+          },
+          "minTotalScore": {
+            "type": "integer",
+            "example": 450
+          }
+        }
+      },
+      "UpdateProgramRequirement": {
+        "type": "object",
+        "properties": {
+          "myanmar": {
+            "type": "integer"
+          },
+          "english": {
+            "type": "integer"
+          },
+          "mathematics": {
+            "type": "integer"
+          },
+          "physics": {
+            "type": "integer"
+          },
+          "chemistry": {
+            "type": "integer"
+          },
+          "biology": {
+            "type": "integer"
+          },
+          "minTotalScore": {
+            "type": "integer"
+          }
+        }
+      },
+      "ProgramComparison": {
+        "type": "object",
+        "required": [
+          "programIds"
+        ],
+        "properties": {
+          "programIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 2,
+            "maxItems": 5,
+            "example": [
+              1,
+              2,
+              3
+            ],
+            "description": "Array of 2-5 program IDs to compare"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Universities",
+      "description": "University management endpoints"
+    },
+    {
+      "name": "Programs",
+      "description": "Program management endpoints"
+    },
+    {
+      "name": "Program Requirements",
+      "description": "Program requirements endpoints"
+    },
+    {
+      "name": "Recommendations",
+      "description": "Program recommendation endpoints"
+    }
+  ],
+  "paths": {
+    "/api/universities": {
+      "get": {
+        "tags": [
+          "Universities"
+        ],
+        "summary": "Get all universities",
+        "description": "Retrieve a paginated list of universities with optional filters",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by name, Myanmar name, or code"
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by region"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of universities retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/University"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Universities"
+        ],
+        "summary": "Create a new university (Admin only)",
+        "description": "Create a new university entry",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUniversity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "University created successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          }
+        }
+      }
+    },
+    "/api/universities/{id}": {
+      "get": {
+        "tags": [
+          "Universities"
+        ],
+        "summary": "Get university by ID",
+        "description": "Retrieve a single university with its programs",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "University ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "University retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UniversityWithPrograms"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "University not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Universities"
+        ],
+        "summary": "Update a university (Admin only)",
+        "description": "Update an existing university",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "University ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUniversity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "University updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "University not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Universities"
+        ],
+        "summary": "Delete a university (Admin only)",
+        "description": "Delete an existing university (only if no programs exist)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "University ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "University deleted successfully"
+          },
+          "400": {
+            "description": "Cannot delete university with existing programs"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "University not found"
+          }
+        }
+      }
+    },
+    "/api/universities/{universityId}/programs": {
+      "get": {
+        "tags": [
+          "Universities"
+        ],
+        "summary": "Get programs by university",
+        "description": "Retrieve all programs for a specific university",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universityId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "University ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Programs retrieved successfully"
+          },
+          "404": {
+            "description": "University not found"
+          }
+        }
+      }
+    },
+    "/api/programs": {
+      "get": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Get all programs",
+        "description": "Retrieve a paginated list of programs with optional filters",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by name, Myanmar name, or code"
+          },
+          {
+            "in": "query",
+            "name": "universityId",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by university ID"
+          },
+          {
+            "in": "query",
+            "name": "minScore",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by minimum score (greater than or equal)"
+          },
+          {
+            "in": "query",
+            "name": "maxScore",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by maximum score (less than or equal)"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of programs retrieved successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Create a new program (Admin only)",
+        "description": "Create a new program for a university",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProgram"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Program created successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "University not found"
+          }
+        }
+      }
+    },
+    "/api/programs/{id}": {
+      "get": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Get program by ID",
+        "description": "Retrieve a single program with its university and requirements",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Program ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Program retrieved successfully"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Update a program (Admin only)",
+        "description": "Update an existing program",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Program ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProgram"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Program updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Delete a program (Admin only)",
+        "description": "Delete an existing program (only if no applications exist)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Program ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Program deleted successfully"
+          },
+          "400": {
+            "description": "Cannot delete program with existing applications"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        }
+      }
+    },
+    "/api/programs/requirements": {
+      "post": {
+        "tags": [
+          "Program Requirements"
+        ],
+        "summary": "Create program requirement (Admin only)",
+        "description": "Create subject score requirements for a program",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProgramRequirement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Requirement created successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        }
+      }
+    },
+    "/api/programs/requirements/{id}": {
+      "put": {
+        "tags": [
+          "Program Requirements"
+        ],
+        "summary": "Update program requirement (Admin only)",
+        "description": "Update subject score requirements for a program",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Requirement ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProgramRequirement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requirement updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Requirement not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Program Requirements"
+        ],
+        "summary": "Delete program requirement (Admin only)",
+        "description": "Delete subject score requirements for a program",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Requirement ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Requirement deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Requirement not found"
+          }
+        }
+      }
+    },
+    "/api/recommendations/eligible-programs": {
+      "get": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Get eligible programs for current user",
+        "description": "Get list of programs the user is eligible for based on their matriculation results",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "region",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by university region (e.g., Yangon, Mandalay)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eligible programs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "matriculation": {
+                          "$ref": "#/components/schemas/MatriculationResult"
+                        },
+                        "eligiblePrograms": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ProgramWithUniversity"
+                          }
+                        },
+                        "totalEligible": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Matriculation results not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/recommendations/suggested": {
+      "get": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Get AI-recommended programs for current user",
+        "description": "Get personalized program recommendations based on matriculation results AND user interests",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Maximum number of recommendations to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recommended programs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "matriculation": {
+                          "$ref": "#/components/schemas/MatriculationResult"
+                        },
+                        "eligiblePrograms": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ProgramWithUniversity"
+                          }
+                        },
+                        "totalEligible": {
+                          "type": "integer"
+                        },
+                        "recommendedPrograms": {
+                          "type": "array",
+                          "items": {
+                            "allOf": [
+                              {
+                                "$ref": "#/components/schemas/ProgramWithUniversity"
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "matchScore": {
+                                    "type": "integer",
+                                    "description": "How well the program matches (0-100)"
+                                  },
+                                  "matchReasons": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "description": "Reasons why this program is recommended"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Matriculation results not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/recommendations/top": {
+      "get": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Get top programs for current user",
+        "description": "Get the top N programs based on match score",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Number of top programs to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top programs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "matriculation": {
+                          "$ref": "#/components/schemas/MatriculationResult"
+                        },
+                        "topPrograms": {
+                          "type": "array",
+                          "items": {
+                            "allOf": [
+                              {
+                                "$ref": "#/components/schemas/ProgramWithUniversity"
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "matchScore": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "totalEligible": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Matriculation results not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/recommendations/compare": {
+      "post": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Compare multiple programs",
+        "description": "Compare 2-5 programs side by side with eligibility check",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgramComparison"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Program comparison retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "programs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "nameMyanmar": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "code": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "university": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "location": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "minScore": {
+                                "type": "integer"
+                              },
+                              "quota": {
+                                "type": "integer",
+                                "nullable": true
+                              },
+                              "requirements": {
+                                "$ref": "#/components/schemas/ProgramRequirement"
+                              },
+                              "isEligible": {
+                                "type": "boolean"
+                              },
+                              "matchScore": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        },
+                        "userMatriculation": {
+                          "type": "object",
+                          "properties": {
+                            "totalScore": {
+                              "type": "integer"
+                            },
+                            "myanmar": {
+                              "type": "integer"
+                            },
+                            "english": {
+                              "type": "integer"
+                            },
+                            "mathematics": {
+                              "type": "integer"
+                            },
+                            "physics": {
+                              "type": "integer"
+                            },
+                            "chemistry": {
+                              "type": "integer"
+                            },
+                            "biology": {
+                              "type": "integer",
+                              "nullable": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or matriculation not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}

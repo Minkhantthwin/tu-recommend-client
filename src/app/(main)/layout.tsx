@@ -1,8 +1,4 @@
-"use client";
-
-import { useState } from "react";
 import { Header } from "@/components/layout/header";
-import { Sidebar } from "@/components/layout/sidebar";
 import { Footer } from "@/components/layout/footer";
 
 export default function MainLayout({
@@ -10,19 +6,15 @@ export default function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="min-h-screen flex flex-col">
-      <Header onMenuClick={() => setSidebarOpen(true)} />
+      <Header />
 
-      <div className="flex-1 flex">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-        <main className="flex-1 p-4 lg:p-6">
-          <div className="container max-w-7xl mx-auto">{children}</div>
-        </main>
-      </div>
+      <main className="flex-1">
+        <div className="container max-w-7xl mx-auto px-4 py-8 lg:px-6">
+          {children}
+        </div>
+      </main>
 
       <Footer />
     </div>

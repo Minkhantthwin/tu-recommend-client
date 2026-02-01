@@ -1,0 +1,1519 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "TU-Recommend API - User Service",
+    "version": "1.0.0",
+    "description": "User management and profile endpoints",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter JWT token"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "ADMIN"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "Password123"
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nameMyanmar": {
+            "type": "string",
+            "description": "အမည် (မြန်မာ)"
+          },
+          "nameEnglish": {
+            "type": "string",
+            "description": "Name (English)"
+          },
+          "nrc": {
+            "type": "string",
+            "description": "နိုင်ငံသားစိစစ်ရေးကတ်ပြားအမှတ်"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE"
+            ]
+          },
+          "religion": {
+            "type": "string",
+            "enum": [
+              "BUDDHIST",
+              "CHRISTIAN",
+              "HINDU",
+              "ISLAM",
+              "OTHER"
+            ]
+          },
+          "ethnicity": {
+            "type": "string"
+          },
+          "nationality": {
+            "type": "string",
+            "default": "Myanmar"
+          },
+          "maritalStatus": {
+            "type": "string",
+            "enum": [
+              "SINGLE",
+              "MARRIED"
+            ]
+          },
+          "phone": {
+            "type": "string"
+          },
+          "alternatePhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "permanentAddress": {
+            "type": "string"
+          },
+          "permanentTownship": {
+            "type": "string"
+          },
+          "permanentRegion": {
+            "type": "string"
+          },
+          "currentAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentTownship": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentRegion": {
+            "type": "string",
+            "nullable": true
+          },
+          "fatherName": {
+            "type": "string"
+          },
+          "fatherNrc": {
+            "type": "string",
+            "nullable": true
+          },
+          "fatherOccupation": {
+            "type": "string",
+            "nullable": true
+          },
+          "fatherPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "motherName": {
+            "type": "string"
+          },
+          "motherNrc": {
+            "type": "string",
+            "nullable": true
+          },
+          "motherOccupation": {
+            "type": "string",
+            "nullable": true
+          },
+          "motherPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianName": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianRelation": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateUserProfileRequest": {
+        "type": "object",
+        "required": [
+          "nameMyanmar",
+          "nameEnglish",
+          "nrc",
+          "dateOfBirth",
+          "gender",
+          "religion",
+          "ethnicity",
+          "phone",
+          "permanentAddress",
+          "permanentTownship",
+          "permanentRegion",
+          "fatherName",
+          "motherName"
+        ],
+        "properties": {
+          "nameMyanmar": {
+            "type": "string",
+            "example": "မောင်မောင်"
+          },
+          "nameEnglish": {
+            "type": "string",
+            "example": "Maung Maung"
+          },
+          "nrc": {
+            "type": "string",
+            "example": "12/YAKANA(N)123456"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date",
+            "example": "2000-01-01"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE"
+            ]
+          },
+          "religion": {
+            "type": "string",
+            "enum": [
+              "BUDDHIST",
+              "CHRISTIAN",
+              "HINDU",
+              "ISLAM",
+              "OTHER"
+            ]
+          },
+          "ethnicity": {
+            "type": "string",
+            "example": "Bamar"
+          },
+          "nationality": {
+            "type": "string",
+            "example": "Myanmar"
+          },
+          "maritalStatus": {
+            "type": "string",
+            "enum": [
+              "SINGLE",
+              "MARRIED"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "example": "09123456789"
+          },
+          "alternatePhone": {
+            "type": "string"
+          },
+          "permanentAddress": {
+            "type": "string"
+          },
+          "permanentTownship": {
+            "type": "string",
+            "example": "Yankin"
+          },
+          "permanentRegion": {
+            "type": "string",
+            "example": "Yangon"
+          },
+          "currentAddress": {
+            "type": "string"
+          },
+          "currentTownship": {
+            "type": "string"
+          },
+          "currentRegion": {
+            "type": "string"
+          },
+          "fatherName": {
+            "type": "string"
+          },
+          "fatherNrc": {
+            "type": "string"
+          },
+          "fatherOccupation": {
+            "type": "string"
+          },
+          "fatherPhone": {
+            "type": "string"
+          },
+          "motherName": {
+            "type": "string"
+          },
+          "motherNrc": {
+            "type": "string"
+          },
+          "motherOccupation": {
+            "type": "string"
+          },
+          "motherPhone": {
+            "type": "string"
+          },
+          "guardianName": {
+            "type": "string"
+          },
+          "guardianRelation": {
+            "type": "string"
+          },
+          "guardianPhone": {
+            "type": "string"
+          },
+          "guardianAddress": {
+            "type": "string"
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "Interest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string",
+            "example": "Programming"
+          },
+          "_count": {
+            "type": "object",
+            "properties": {
+              "users": {
+                "type": "integer",
+                "example": 5
+              }
+            }
+          }
+        }
+      },
+      "CreateInterest": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Programming"
+          }
+        }
+      },
+      "UpdateInterest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Software Development"
+          }
+        }
+      },
+      "AddUserInterest": {
+        "type": "object",
+        "required": [
+          "interestId"
+        ],
+        "properties": {
+          "interestId": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "AddMultipleUserInterests": {
+        "type": "object",
+        "required": [
+          "interestIds"
+        ],
+        "properties": {
+          "interestIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "example": [
+              1,
+              2,
+              3
+            ]
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "User management endpoints"
+    },
+    {
+      "name": "User Profile",
+      "description": "User profile endpoints"
+    },
+    {
+      "name": "Interests",
+      "description": "Interest management endpoints"
+    },
+    {
+      "name": "User Interests",
+      "description": "User interests management endpoints"
+    }
+  ],
+  "paths": {
+    "/api/interests": {
+      "get": {
+        "tags": [
+          "Interests"
+        ],
+        "summary": "Get all interests",
+        "description": "Retrieve a list of all available interests",
+        "responses": {
+          "200": {
+            "description": "List of interests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Interest"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Interests"
+        ],
+        "summary": "Create a new interest (Admin only)",
+        "description": "Create a new interest category",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInterest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Interest created successfully"
+          },
+          "400": {
+            "description": "Validation error or interest already exists"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          }
+        }
+      }
+    },
+    "/api/interests/{id}": {
+      "get": {
+        "tags": [
+          "Interests"
+        ],
+        "summary": "Get interest by ID",
+        "description": "Retrieve a single interest by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Interest ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Interest retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Interest"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Interest not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Interests"
+        ],
+        "summary": "Update an interest (Admin only)",
+        "description": "Update an existing interest",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Interest ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInterest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Interest updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Interest not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Interests"
+        ],
+        "summary": "Delete an interest (Admin only)",
+        "description": "Delete an existing interest (only if no users have it)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Interest ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Interest deleted successfully"
+          },
+          "400": {
+            "description": "Cannot delete interest with associated users"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Interest not found"
+          }
+        }
+      }
+    },
+    "/api/me/interests": {
+      "get": {
+        "tags": [
+          "User Interests"
+        ],
+        "summary": "Get current user's interests",
+        "description": "Retrieve all interests for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User interests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Interest"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User Interests"
+        ],
+        "summary": "Add an interest to current user",
+        "description": "Add a single interest to the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddUserInterest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Interest added successfully"
+          },
+          "400": {
+            "description": "User already has this interest"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Interest not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User Interests"
+        ],
+        "summary": "Replace all user interests",
+        "description": "Replace all interests for the authenticated user with a new set",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMultipleUserInterests"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Interests replaced successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Interest"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or interests not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/me/interests/bulk": {
+      "post": {
+        "tags": [
+          "User Interests"
+        ],
+        "summary": "Add multiple interests to current user",
+        "description": "Add multiple interests to the authenticated user at once",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMultipleUserInterests"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Interests added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Interest"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or interests not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/me/interests/{interestId}": {
+      "delete": {
+        "tags": [
+          "User Interests"
+        ],
+        "summary": "Remove an interest from current user",
+        "description": "Remove a single interest from the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "interestId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Interest ID to remove"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Interest removed successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User does not have this interest"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users (Admin only)",
+        "description": "Retrieve a list of all users (without passwords)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user (Admin only)",
+        "description": "Create a new user account",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "409": {
+            "description": "User with this email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by ID (Admin only)",
+        "description": "Retrieve a specific user with their profile and matriculation data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/User"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "profile": {
+                              "$ref": "#/components/schemas/UserProfile"
+                            },
+                            "matriculation": {
+                              "type": "object",
+                              "nullable": true
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user",
+        "description": "Update an existing user's information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email already in use",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user (Admin only)",
+        "description": "Delete a user account",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/profile": {
+      "get": {
+        "tags": [
+          "User Profile"
+        ],
+        "summary": "Get user profile",
+        "description": "Retrieve the profile of a specific user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User Profile"
+        ],
+        "summary": "Create user profile",
+        "description": "Create a profile for a user (Myanmar University Application Form data)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User profile created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User profile created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile already exists or NRC already registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User Profile"
+        ],
+        "summary": "Update user profile",
+        "description": "Update an existing user profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "NRC already registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User Profile"
+        ],
+        "summary": "Delete user profile (Admin only)",
+        "description": "Delete a user's profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User profile deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -16,8 +16,20 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
-
-  const navItems = user?.role === UserRole.ADMIN ? adminNavItems : mainNavItems;
+  // Determine nav items based on user role or pathname if user is not available during hydration
+  // On the server/initial render, user might be null, but we want to avoid hydration mismatch
+  // If we are on an admin path, we likely want to show admin nav items
+  const isAdminPath = pathname?.startsWith("/admin");
+  
+  // Use useEffect to handle client-side only logic to prevent hydration mismatch
+  // but for initial render, we can guess based on path or default to main nav
+  // The most robust way is to defer rendering user-specific items until mounted
+  // or use a consistent default.
+  
+  const navItems =
+    user?.role === UserRole.ADMIN || (!user && isAdminPath)
+      ? adminNavItems
+      : mainNavItems;
 
   return (
     <>
@@ -54,7 +66,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <nav className="flex-1 overflow-y-auto p-4">
             <ul className="space-y-1">
               {navItems.map((item) => {
-                const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+                const isDashboard = item.href === "/admin" || item.href === "/dashboard";
+                const isActive = isDashboard 
+                  ? pathname === item.href 
+                  : pathname === item.href || pathname?.startsWith(`${item.href}/`);
                 const Icon = item.icon;
 
                 return (

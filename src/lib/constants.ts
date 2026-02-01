@@ -73,7 +73,12 @@ export const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
  * File upload constraints
  */
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+export const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
 export const ACCEPTED_DOCUMENT_TYPES = ["application/pdf"];
 
 /**

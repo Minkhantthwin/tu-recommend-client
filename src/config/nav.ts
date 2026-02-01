@@ -2,7 +2,6 @@ import {
   LayoutDashboard,
   User,
   GraduationCap,
-  School,
   BookOpen,
   FileText,
   Heart,

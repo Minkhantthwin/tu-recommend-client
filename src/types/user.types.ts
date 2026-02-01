@@ -1,4 +1,7 @@
+import { ApiResponse } from "./api.types";
 import { Gender, Religion, MaritalStatus, UserRole } from "./enums";
+import { MatriculationResult } from "./matriculation.types";
+import { UserInterest } from "./interest.types";
 
 /**
  * User model
@@ -6,57 +9,57 @@ import { Gender, Religion, MaritalStatus, UserRole } from "./enums";
 export interface User {
   id: string;
   email: string;
-  phone?: string | null;
   role: UserRole;
-  isVerified: boolean;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   profile?: UserProfile | null;
+  matriculation?: MatriculationResult | null;
+  interests?: UserInterest[];
 }
 
 /**
  * User Profile model
  */
 export interface UserProfile {
-  id: string;
+  id: number;
   userId: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth?: string | null;
-  gender?: Gender | null;
-  religion?: Religion | null;
-  maritalStatus?: MaritalStatus | null;
+  nameMyanmar?: string | null;
+  nameEnglish?: string | null;
   nrc?: string | null;
-  nationality?: string | null;
+  dateOfBirth?: string | null;
+  gender?: string | null; // MALE, FEMALE
+  religion?: string | null; // BUDDHIST, CHRISTIAN, etc.
   ethnicity?: string | null;
-  photoUrl?: string | null;
-  
-  // Current Address
-  currentAddress?: string | null;
-  currentCity?: string | null;
-  currentState?: string | null;
-  currentCountry?: string | null;
-  
-  // Permanent Address
+  nationality?: string | null;
+  maritalStatus?: string | null; // SINGLE, MARRIED
+  phone?: string | null;
+  alternatePhone?: string | null;
+
+  // Addresses
   permanentAddress?: string | null;
-  permanentCity?: string | null;
-  permanentState?: string | null;
-  permanentCountry?: string | null;
-  
-  // Parent/Guardian Info
+  permanentTownship?: string | null;
+  permanentRegion?: string | null;
+  currentAddress?: string | null;
+  currentTownship?: string | null;
+  currentRegion?: string | null;
+
+  // Parents/Guardian
   fatherName?: string | null;
+  fatherNrc?: string | null;
   fatherOccupation?: string | null;
   fatherPhone?: string | null;
   motherName?: string | null;
+  motherNrc?: string | null;
   motherOccupation?: string | null;
   motherPhone?: string | null;
   guardianName?: string | null;
   guardianRelation?: string | null;
   guardianPhone?: string | null;
-  
-  createdAt: string;
-  updatedAt: string;
+  guardianAddress?: string | null;
+
+  photoUrl?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**
@@ -73,19 +76,36 @@ export interface LoginInput {
 export interface RegisterInput {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
+  confirmPassword?: string;
+  role?: UserRole;
+}
+
+/**
+ * Auth tokens
+ */
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn?: number;
+}
+
+/**
+ * Auth data
+ */
+export interface AuthData {
+  user: User;
+  tokens: AuthTokens;
 }
 
 /**
  * Auth response with tokens
  */
-export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}
+export type AuthResponse = ApiResponse<AuthData>;
+
+/**
+ * Tokens response (for refresh)
+ */
+export type TokensResponse = ApiResponse<AuthTokens>;
 
 /**
  * Update profile input

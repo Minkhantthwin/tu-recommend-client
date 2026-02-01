@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RegisterForm } from "@/components/forms/register-form";
 
 export const metadata = {
   title: "Register",
@@ -14,11 +15,8 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      {/* Register form placeholder */}
       <div className="rounded-lg border p-6">
-        <p className="text-center text-muted-foreground">
-          Registration form will be implemented here
-        </p>
+        <RegisterForm />
       </div>
 
       <div className="text-center text-sm">

@@ -1,0 +1,803 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "TU-Recommend API - Matriculation Service",
+    "version": "1.0.0",
+    "description": "Matriculation result management endpoints",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter JWT token"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "example": 100
+          },
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 10
+          }
+        }
+      },
+      "MatriculationResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "examYear": {
+            "type": "integer",
+            "example": 2025
+          },
+          "rollNumber": {
+            "type": "string",
+            "example": "12345"
+          },
+          "schoolName": {
+            "type": "string",
+            "example": "BEHS No. 1 Yangon"
+          },
+          "schoolTownship": {
+            "type": "string",
+            "example": "Mingalar Taung Nyunt"
+          },
+          "schoolRegion": {
+            "type": "string",
+            "example": "Yangon"
+          },
+          "myanmar": {
+            "type": "integer",
+            "example": 85
+          },
+          "english": {
+            "type": "integer",
+            "example": 78
+          },
+          "mathematics": {
+            "type": "integer",
+            "example": 92
+          },
+          "physics": {
+            "type": "integer",
+            "example": 88
+          },
+          "chemistry": {
+            "type": "integer",
+            "example": 82
+          },
+          "biology": {
+            "type": "integer",
+            "nullable": true,
+            "example": 80
+          },
+          "totalScore": {
+            "type": "integer",
+            "example": 505
+          },
+          "totalMarks": {
+            "type": "integer",
+            "example": 600
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateMatriculation": {
+        "type": "object",
+        "required": [
+          "examYear",
+          "rollNumber",
+          "schoolName",
+          "schoolTownship",
+          "schoolRegion",
+          "myanmar",
+          "english",
+          "mathematics",
+          "physics",
+          "chemistry"
+        ],
+        "properties": {
+          "examYear": {
+            "type": "integer",
+            "example": 2025
+          },
+          "rollNumber": {
+            "type": "string",
+            "example": "12345"
+          },
+          "schoolName": {
+            "type": "string",
+            "example": "BEHS No. 1 Yangon"
+          },
+          "schoolTownship": {
+            "type": "string",
+            "example": "Mingalar Taung Nyunt"
+          },
+          "schoolRegion": {
+            "type": "string",
+            "example": "Yangon"
+          },
+          "myanmar": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 85
+          },
+          "english": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 78
+          },
+          "mathematics": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 92
+          },
+          "physics": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 88
+          },
+          "chemistry": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 82
+          },
+          "biology": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 80,
+            "nullable": true
+          }
+        }
+      },
+      "UpdateMatriculation": {
+        "type": "object",
+        "properties": {
+          "examYear": {
+            "type": "integer"
+          },
+          "rollNumber": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "schoolTownship": {
+            "type": "string"
+          },
+          "schoolRegion": {
+            "type": "string"
+          },
+          "myanmar": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "english": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "mathematics": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "physics": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "chemistry": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "biology": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true
+          }
+        }
+      },
+      "MatriculationWithUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "examYear": {
+            "type": "integer"
+          },
+          "rollNumber": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "schoolTownship": {
+            "type": "string"
+          },
+          "schoolRegion": {
+            "type": "string"
+          },
+          "myanmar": {
+            "type": "integer"
+          },
+          "english": {
+            "type": "integer"
+          },
+          "mathematics": {
+            "type": "integer"
+          },
+          "physics": {
+            "type": "integer"
+          },
+          "chemistry": {
+            "type": "integer"
+          },
+          "biology": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalScore": {
+            "type": "integer"
+          },
+          "totalMarks": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "profile": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "nameEnglish": {
+                    "type": "string"
+                  },
+                  "nameMyanmar": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "MatriculationStats": {
+        "type": "object",
+        "properties": {
+          "totalStudents": {
+            "type": "integer",
+            "example": 150
+          },
+          "averages": {
+            "type": "object",
+            "properties": {
+              "totalScore": {
+                "type": "integer",
+                "example": 450
+              },
+              "myanmar": {
+                "type": "integer",
+                "example": 75
+              },
+              "english": {
+                "type": "integer",
+                "example": 72
+              },
+              "mathematics": {
+                "type": "integer",
+                "example": 78
+              },
+              "physics": {
+                "type": "integer",
+                "example": 74
+              },
+              "chemistry": {
+                "type": "integer",
+                "example": 76
+              }
+            }
+          },
+          "highestScore": {
+            "type": "integer",
+            "example": 540
+          },
+          "lowestScore": {
+            "type": "integer",
+            "example": 380
+          },
+          "byRegion": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "region": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "averageScore": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Matriculation",
+      "description": "User matriculation result endpoints"
+    },
+    {
+      "name": "Matriculation Admin",
+      "description": "Admin matriculation management endpoints"
+    }
+  ],
+  "paths": {
+    "/api/me/matriculation": {
+      "get": {
+        "tags": [
+          "Matriculation"
+        ],
+        "summary": "Get current user's matriculation result",
+        "description": "Retrieve the matriculation result for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matriculation result retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MatriculationResult"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Matriculation"
+        ],
+        "summary": "Create matriculation result for current user",
+        "description": "Create a new matriculation result entry for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMatriculation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Matriculation result created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MatriculationResult"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or matriculation already exists"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Matriculation"
+        ],
+        "summary": "Update current user's matriculation result",
+        "description": "Update the matriculation result for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMatriculation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Matriculation result updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MatriculationResult"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Matriculation result not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Matriculation"
+        ],
+        "summary": "Delete current user's matriculation result",
+        "description": "Delete the matriculation result for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Matriculation result deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Matriculation result not found"
+          }
+        }
+      }
+    },
+    "/api/matriculations": {
+      "get": {
+        "tags": [
+          "Matriculation Admin"
+        ],
+        "summary": "Get all matriculation results (Admin only)",
+        "description": "Retrieve paginated list of all matriculation results",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "examYear",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by exam year"
+          },
+          {
+            "in": "query",
+            "name": "schoolRegion",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by school region"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matriculation results retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MatriculationWithUser"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          }
+        }
+      }
+    },
+    "/api/matriculations/stats": {
+      "get": {
+        "tags": [
+          "Matriculation Admin"
+        ],
+        "summary": "Get matriculation statistics (Admin only)",
+        "description": "Retrieve aggregate statistics for matriculation results",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "examYear",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter statistics by exam year"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MatriculationStats"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          }
+        }
+      }
+    },
+    "/api/matriculations/{id}": {
+      "get": {
+        "tags": [
+          "Matriculation Admin"
+        ],
+        "summary": "Get matriculation result by ID (Admin only)",
+        "description": "Retrieve a specific matriculation result by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Matriculation result ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matriculation result retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MatriculationWithUser"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin access required"
+          },
+          "404": {
+            "description": "Matriculation result not found"
+          }
+        }
+      }
+    }
+  }
+}

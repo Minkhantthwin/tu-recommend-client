@@ -6,7 +6,10 @@ import type { LoginInput, RegisterInput, AuthResponse, User } from "@/types";
  * Login user
  */
 export async function login(data: LoginInput): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>(`${API_ROUTES.AUTH}/login`, data);
+  const response = await apiClient.post<AuthResponse>(
+    `${API_ROUTES.AUTH}/login`,
+    data,
+  );
   return response.data;
 }
 
@@ -14,7 +17,10 @@ export async function login(data: LoginInput): Promise<AuthResponse> {
  * Register new user
  */
 export async function register(data: RegisterInput): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>(`${API_ROUTES.AUTH}/register`, data);
+  const response = await apiClient.post<AuthResponse>(
+    `${API_ROUTES.AUTH}/register`,
+    data,
+  );
   return response.data;
 }
 
@@ -36,10 +42,15 @@ export async function getCurrentUser(): Promise<User> {
 /**
  * Refresh access token
  */
-export async function refreshToken(refreshToken: string): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>(`${API_ROUTES.AUTH}/refresh`, {
-    refreshToken,
-  });
+export async function refreshToken(
+  refreshToken: string,
+): Promise<AuthResponse> {
+  const response = await apiClient.post<AuthResponse>(
+    `${API_ROUTES.AUTH}/refresh`,
+    {
+      refreshToken,
+    },
+  );
   return response.data;
 }
 
@@ -53,6 +64,12 @@ export async function forgotPassword(email: string): Promise<void> {
 /**
  * Reset password with token
  */
-export async function resetPassword(token: string, password: string): Promise<void> {
-  await apiClient.post(`${API_ROUTES.AUTH}/reset-password`, { token, password });
+export async function resetPassword(
+  token: string,
+  password: string,
+): Promise<void> {
+  await apiClient.post(`${API_ROUTES.AUTH}/reset-password`, {
+    token,
+    password,
+  });
 }

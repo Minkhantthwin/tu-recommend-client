@@ -27,33 +27,59 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const [initialAuth] = useState(() => {
+    if (typeof window === "undefined") {
+      return { user: null as User | null, accessToken: null as string | null, shouldClear: false };
+    }
 
-  // Load user from localStorage on mount
-  useEffect(() => {
     const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
     const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
 
-    if (storedUser && accessToken) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        // Invalid stored user, clear storage
-        localStorage.removeItem(STORAGE_KEYS.USER);
-        localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-      }
+    if (!storedUser || !accessToken) {
+      return { user: null as User | null, accessToken: accessToken ?? null, shouldClear: !!storedUser };
     }
-    setIsLoading(false);
-  }, []);
+
+    try {
+      return {
+        user: JSON.parse(storedUser) as User,
+        accessToken,
+        shouldClear: false,
+      };
+    } catch {
+      return { user: null as User | null, accessToken: null as string | null, shouldClear: true };
+    }
+  });
+
+  const [user, setUser] = useState<User | null>(initialAuth.user);
+  const [isLoading] = useState(false);
+
+  const setAuthCookie = (accessToken: string) => {
+    document.cookie = `tu-access-token=${accessToken}; Path=/; SameSite=Lax`;
+  };
+
+  const clearAuthCookie = () => {
+    document.cookie = "tu-access-token=; Path=/; Max-Age=0; SameSite=Lax";
+  };
+
+  useEffect(() => {
+    if (initialAuth.accessToken) {
+      setAuthCookie(initialAuth.accessToken);
+    }
+    if (initialAuth.shouldClear) {
+      localStorage.removeItem(STORAGE_KEYS.USER);
+      localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+      clearAuthCookie();
+    }
+  }, [initialAuth.accessToken, initialAuth.shouldClear]);
 
   const login = (user: User, accessToken: string, refreshToken: string) => {
     setUser(user);
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
     localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
     localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+    setAuthCookie(accessToken);
   };
 
   const logout = () => {
@@ -61,6 +87,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem(STORAGE_KEYS.USER);
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    clearAuthCookie();
     router.push("/login");
   };
 
