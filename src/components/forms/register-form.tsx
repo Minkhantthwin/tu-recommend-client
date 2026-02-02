@@ -64,7 +64,7 @@ export function RegisterForm() {
           response.data.tokens.refreshToken
         );
         toast.success("Account created successfully");
-        router.push("/");
+        router.push("/matriculation");
       } else {
         toast.error(response.message || "Failed to register");
       }

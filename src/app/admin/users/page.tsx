@@ -21,7 +21,23 @@ import { UserForm, type UserFormValues } from "@/components/admin/users/user-for
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 
 export default function AdminUsersPage() {
-  const { users, isLoading, error, deleteUser, createUser, updateUser, isCreating, isUpdating, isDeleting } = useAdminUsers();
+  const { 
+    users, 
+    isLoading, 
+    error, 
+    deleteUser, 
+    createUser, 
+    updateUser, 
+    isCreating, 
+    isUpdating, 
+    isDeleting,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    search,
+    setSearch
+  } = useAdminUsers();
   const router = useRouter();
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -75,12 +91,12 @@ export default function AdminUsersPage() {
   };
 
   const handleExport = () => {
-    if (!users?.data) return;
+    if (!users?.data?.data) return;
     
     const headers = ["ID", "Email", "Role", "Created At"];
     const csvContent = [
       headers.join(","),
-      ...users.data.map((user) => 
+      ...users.data.data.map((user) => 
         [user.id, user.email, user.role, user.createdAt].join(",")
       )
     ].join("\n");
@@ -209,14 +225,34 @@ export default function AdminUsersPage() {
       <div className="rounded-lg border bg-card p-6">
         <DataTable 
           columns={columns} 
-          data={users?.data || []} 
+          data={users?.data?.data || []} 
           searchKey="email"
+          searchValue={search}
+          onSearchChange={setSearch}
           filterPlaceholder="Filter emails..."
           onAdd={() => {
             setEditingUser(null);
             setIsUserFormOpen(true);
           }}
           onExport={handleExport}
+          pageCount={users?.data?.pagination?.totalPages || 0}
+          pagination={{
+            pageIndex: page - 1,
+            pageSize: limit,
+          }}
+          onPaginationChange={(updater) => {
+            if (typeof updater === 'function') {
+              const newState = updater({
+                pageIndex: page - 1,
+                pageSize: limit,
+              });
+              setPage(newState.pageIndex + 1);
+              setLimit(newState.pageSize);
+            } else {
+              setPage(updater.pageIndex + 1);
+              setLimit(updater.pageSize);
+            }
+          }}
         />
       </div>
 

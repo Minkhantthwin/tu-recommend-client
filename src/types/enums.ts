@@ -2,7 +2,7 @@ export enum ApplicationStatus {
   DRAFT = "DRAFT",
   SUBMITTED = "SUBMITTED",
   UNDER_REVIEW = "UNDER_REVIEW",
-  APPROVED = "APPROVED",
+  ACCEPTED = "ACCEPTED",
   REJECTED = "REJECTED",
   WITHDRAWN = "WITHDRAWN",
 }
@@ -28,4 +28,16 @@ export enum MaritalStatus {
 export enum UserRole {
   USER = "USER",
   ADMIN = "ADMIN",
+}
+
+export enum Degree {
+  BACHELOR = "BACHELOR",
+  MASTER = "MASTER",
+  DIPLOMA = "DIPLOMA",
+}
+
+export enum ProgramStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  SUSPENDED = "SUSPENDED",
 }

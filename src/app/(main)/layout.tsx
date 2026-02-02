@@ -11,7 +11,7 @@ export default function MainLayout({
       <Header />
 
       <main className="flex-1">
-        <div className="container max-w-7xl mx-auto px-4 py-8 lg:px-6">
+        <div className="container max-w-7xl mx-auto px-4 py-4 md:px-6 md:py-8 lg:px-8">
           {children}
         </div>
       </main>

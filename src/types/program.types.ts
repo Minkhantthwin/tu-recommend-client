@@ -1,4 +1,5 @@
 import { University } from "./university.types";
+import { Degree, ProgramStatus } from "./enums";
 
 /**
  * Program model
@@ -8,17 +9,24 @@ export interface Program {
   universityId: number;
   name: string;
   nameMm?: string | null;
+  nameMyanmar?: string | null; // Added to match API JSON
   code: string;
   description?: string | null;
   descriptionMm?: string | null;
   duration: number; // in years
-  degree: string;
+  degree: Degree;
   faculty?: string | null;
-  isActive: boolean;
+  status: ProgramStatus;
   createdAt: string;
   updatedAt: string;
   university?: University;
-  requirements?: ProgramRequirement | null;
+  requirements?: ProgramRequirement[];
+  minScore?: number; // Added from API JSON
+  quota?: number; // Added from API JSON
+}
+
+export interface ProgramWithUniversity extends Program {
+  university: University;
 }
 
 /**
@@ -28,12 +36,12 @@ export interface ProgramRequirement {
   id: number;
   programId: number;
   minTotalScore: number;
-  minMyanmar?: number | null;
-  minEnglish?: number | null;
-  minMathematics?: number | null;
-  minPhysics?: number | null;
-  minChemistry?: number | null;
-  minBiology?: number | null;
+  myanmar?: number | null;
+  english?: number | null;
+  mathematics?: number | null;
+  physics?: number | null;
+  chemistry?: number | null;
+  biology?: number | null;
   additionalRequirements?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -50,9 +58,12 @@ export interface ProgramInput {
   description?: string;
   descriptionMm?: string;
   duration: number;
-  degree: string;
+  degree: Degree;
   faculty?: string;
-  isActive?: boolean;
+  status?: ProgramStatus;
+  minScore?: number;
+  quota?: number;
+  requirements?: ProgramRequirementInput;
 }
 
 /**
@@ -60,12 +71,12 @@ export interface ProgramInput {
  */
 export interface ProgramRequirementInput {
   minTotalScore: number;
-  minMyanmar?: number;
-  minEnglish?: number;
-  minMathematics?: number;
-  minPhysics?: number;
-  minChemistry?: number;
-  minBiology?: number;
+  myanmar?: number;
+  english?: number;
+  mathematics?: number;
+  physics?: number;
+  chemistry?: number;
+  biology?: number;
   additionalRequirements?: string;
 }
 
@@ -75,9 +86,9 @@ export interface ProgramRequirementInput {
 export interface ProgramFilters {
   search?: string;
   universityId?: number;
-  degree?: string;
+  degree?: Degree;
   faculty?: string;
-  isActive?: boolean;
+  status?: ProgramStatus;
 }
 
 /**

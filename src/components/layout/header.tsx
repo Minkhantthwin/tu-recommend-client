@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Bell, User, LogOut, Settings } from "lucide-react";
+import { Menu, Bell, User, LogOut, Settings, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import { ThemeToggle } from "./theme-toggle";
@@ -72,7 +72,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             )}
           >
             Programs
-          </Link>
+          </Link>       
         </nav>
 
         {/* Right side */}
@@ -102,6 +102,14 @@ export function Header({ onMenuClick }: HeaderProps) {
                 >
                   <User className="h-4 w-4" />
                   Profile
+                </Link>
+                <Link
+                  href="/applications"
+                  className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
+                  onClick={() => setIsProfileOpen(false)}
+                >
+                  <FileText className="h-4 w-4" />
+                  Applications
                 </Link>
                 <Link
                   href="/settings"

@@ -5,7 +5,7 @@ export const APPLICATION_STATUS_LABELS = {
   DRAFT: "စာကြမ်း",
   SUBMITTED: "တင်သွင်းပြီး",
   UNDER_REVIEW: "စိစစ်ဆဲ",
-  APPROVED: "အတည်ပြုပြီး",
+  ACCEPTED: "အတည်ပြုပြီး",
   REJECTED: "ငြင်းပယ်ပြီး",
   WITHDRAWN: "ရုပ်သိမ်းပြီး",
 } as const;
@@ -105,4 +105,5 @@ export const STORAGE_KEYS = {
   REFRESH_TOKEN: "tu-refresh-token",
   USER: "tu-user",
   THEME: "tu-theme",
+  PROGRAM_CHOICES: "tu-program-choices",
 } as const;

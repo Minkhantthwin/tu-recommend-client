@@ -40,6 +40,13 @@ export function useAdminStats() {
             approved: 20,
             rejected: 10,
           },
+          interests: [
+            { name: "Computer Science", count: 45 },
+            { name: "Engineering", count: 30 },
+            { name: "Medicine", count: 20 },
+            { name: "Business", count: 15 },
+            { name: "Arts", count: 10 },
+          ],
         };
       }
     },

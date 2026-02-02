@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { GraduationCap, Building2, Sparkles, Phone, Mail, MapPin, ArrowRight } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { UniversityCarousel } from "@/components/dashboard/university-carousel";
+import { SuggestedPrograms } from "@/components/dashboard/suggested-programs";
 
 export const metadata = {
   title: "Home",
@@ -8,9 +10,9 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-16">
-      <section className="rounded-2xl border bg-card p-8 lg:p-12">
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+    <div className="space-y-6 md:space-y-16">
+      <section className="rounded-2xl border bg-card p-4 md:p-8 lg:p-12 overflow-hidden">
+        <div className="grid gap-8 md:gap-10 lg:grid-cols-2 lg:items-center">
           <div className="space-y-6">
             <div className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">
               Trusted pathway to technological universities
@@ -23,7 +25,7 @@ export default function DashboardPage() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/register"
+                href="/programs"
                 className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
               >
                 Start Your Journey
@@ -37,55 +39,15 @@ export default function DashboardPage() {
               </Link>
             </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { title: "Matriculation Insights", description: "Track scores and unlock matching programs", icon: GraduationCap },
-              { title: "Program Explorer", description: "Compare programs and entry requirements", icon: Building2 },
-              { title: "AI Recommendations", description: "Get personalized suggestions instantly", icon: Sparkles },
-              { title: "Application Support", description: "Guided steps from start to finish", icon: GraduationCap },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.title} className="rounded-xl border bg-background p-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                    <Icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <h3 className="mt-4 text-sm font-semibold">{item.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
-                </div>
-              );
-            })}
+          
+          <div className="relative min-w-0">
+             <UniversityCarousel hideHeader />
           </div>
         </div>
       </section>
 
       <section className="space-y-6">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-semibold">Featured Programs</h2>
-          <p className="text-muted-foreground">
-            Swipe through popular technological university programs.
-          </p>
-        </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {[
-            { title: "Computer Science", detail: "Software, AI, and data-driven programs" },
-            { title: "Electrical Engineering", detail: "Power systems and electronics focus" },
-            { title: "Civil Engineering", detail: "Infrastructure and sustainable design" },
-            { title: "Mechanical Engineering", detail: "Machines, automation, and robotics" },
-            { title: "Information Technology", detail: "Networks, security, and cloud systems" },
-          ].map((item) => (
-            <div key={item.title} className="min-w-[240px] rounded-xl border bg-card p-5">
-              <h3 className="text-base font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{item.detail}</p>
-              <Link
-                href="/programs"
-                className="mt-4 inline-flex items-center text-sm font-medium text-primary hover:underline"
-              >
-                Explore Program <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </div>
-          ))}
-        </div>
+        <SuggestedPrograms />
       </section>
 
       <section className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
@@ -110,7 +72,7 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
-        <div className="rounded-2xl border bg-card p-8">
+        <div className="rounded-2xl border bg-card p-4 md:p-8">
           <h2 className="text-2xl font-semibold">Contact Us</h2>
           <p className="mt-4 text-muted-foreground">
             Reach out for guidance, partnership inquiries, or feedback.

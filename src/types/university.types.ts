@@ -1,24 +1,22 @@
+import { Program } from "./program.types";
+
 /**
- * University model
+ * University model matching Prisma schema
  */
 export interface University {
   id: number;
   name: string;
-  nameMm?: string | null;
-  code: string;
+  nameMyanmar?: string | null;
+  code?: string | null;
+  location: string;
+  region?: string | null;
   description?: string | null;
-  descriptionMm?: string | null;
-  address?: string | null;
-  city?: string | null;
-  state?: string | null;
-  website?: string | null;
-  email?: string | null;
-  phone?: string | null;
+  photoUrl?: string | null;
   logoUrl?: string | null;
-  isActive: boolean;
+
   createdAt: string;
   updatedAt: string;
-  photos?: UniversityPhoto[];
+
   programs?: Program[];
   _count?: {
     programs: number;
@@ -26,39 +24,17 @@ export interface University {
 }
 
 /**
- * University Photo model
- */
-export interface UniversityPhoto {
-  id: number;
-  universityId: number;
-  url: string;
-  caption?: string | null;
-  order: number;
-  createdAt: string;
-}
-
-/**
- * Program model (imported from program.types.ts)
- */
-import { Program } from "./program.types";
-
-/**
  * Create/Update university input
  */
 export interface UniversityInput {
   name: string;
-  nameMm?: string;
-  code: string;
+  nameMyanmar?: string;
+  code?: string;
+  location: string;
+  region?: string;
   description?: string;
-  descriptionMm?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  website?: string;
-  email?: string;
-  phone?: string;
+  photoUrl?: string;
   logoUrl?: string;
-  isActive?: boolean;
 }
 
 /**
@@ -66,7 +42,5 @@ export interface UniversityInput {
  */
 export interface UniversityFilters {
   search?: string;
-  city?: string;
-  state?: string;
-  isActive?: boolean;
+  region?: string;
 }

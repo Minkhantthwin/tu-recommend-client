@@ -11,6 +11,9 @@ export interface Interest {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  _count?: {
+    users: number;
+  };
 }
 
 /**

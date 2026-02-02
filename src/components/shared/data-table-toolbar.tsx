@@ -10,6 +10,8 @@ import { DataTableViewOptions } from "./data-table-view-options"
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
   searchKey?: string
+  searchValue?: string
+  onSearchChange?: (value: string) => void
   filterPlaceholder?: string
   onAdd?: () => void
   onExport?: () => void
@@ -18,11 +20,13 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
   searchKey,
+  searchValue,
+  onSearchChange,
   filterPlaceholder = "Filter...",
   onAdd,
   onExport,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
+  const isFiltered = table.getState().columnFilters.length > 0 || !!searchValue
 
   return (
     <div className="flex items-center justify-between">
@@ -30,17 +34,30 @@ export function DataTableToolbar<TData>({
         {searchKey && (
           <Input
             placeholder={filterPlaceholder}
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
+            value={
+              searchValue !== undefined
+                ? searchValue
+                : (table.getColumn(searchKey)?.getFilterValue() as string) ?? ""
             }
+            onChange={(event) => {
+              if (onSearchChange) {
+                onSearchChange(event.target.value)
+              } else {
+                table.getColumn(searchKey)?.setFilterValue(event.target.value)
+              }
+            }}
             className="h-8 w-[150px] lg:w-[250px]"
           />
         )}
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              if (onSearchChange) {
+                onSearchChange("")
+              }
+              table.resetColumnFilters()
+            }}
             className="h-8 px-2 lg:px-3"
           >
             Reset

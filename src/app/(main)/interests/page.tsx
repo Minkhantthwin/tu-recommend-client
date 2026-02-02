@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/shared/page-header";
+import { InterestSelectionForm } from "@/components/forms/interest-selection-form";
 
 export const metadata = {
   title: "Interests",
@@ -6,19 +7,14 @@ export const metadata = {
 
 export default function InterestsPage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       <PageHeader
         title="Interests"
         titleMm="စိတ်ဝင်စားမှုများ"
         description="Select your areas of interest"
       />
 
-      {/* Interests content placeholder */}
-      <div className="rounded-lg border p-6">
-        <p className="text-muted-foreground">
-          Interest selection will be implemented here
-        </p>
-      </div>
+      <InterestSelectionForm />
     </div>
   );
 }

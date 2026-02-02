@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "TU Recommendation System",
+  name: "TU Recommend",
   nameMm: "တက္ကသိုလ်ဝင်ခွင့်လျှောက်ထားရေးစနစ်",
   description: "Technological University Recommendation & Application System",
   descriptionMm: "တက္ကသိုလ်ဝင်ခွင့်လျှောက်ထားရေးစနစ်",

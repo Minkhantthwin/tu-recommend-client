@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getUsers,
@@ -7,6 +8,7 @@ import {
 } from "@/lib/api/endpoints/admin.api";
 import { RegisterInput } from "@/types/user.types";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const getErrorMessage = (error: unknown, fallback: string) => {
   if (typeof error === "string") {
@@ -34,10 +36,14 @@ const getErrorMessage = (error: unknown, fallback: string) => {
 
 export function useAdminUsers() {
   const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
 
   const usersQuery = useQuery({
-    queryKey: ["admin-users"],
-    queryFn: getUsers,
+    queryKey: ["admin-users", { page, limit, search: debouncedSearch }],
+    queryFn: () => getUsers({ page, limit, search: debouncedSearch }),
   });
 
   const deleteUserMutation = useMutation({
@@ -85,5 +91,11 @@ export function useAdminUsers() {
     isDeleting: deleteUserMutation.isPending,
     isCreating: createUserMutation.isPending,
     isUpdating: updateUserMutation.isPending,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    search,
+    setSearch,
   };
 }

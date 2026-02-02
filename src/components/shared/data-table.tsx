@@ -12,6 +12,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  PaginationState,
+  OnChangeFn,
 } from "@tanstack/react-table"
 
 import {
@@ -30,18 +32,28 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   searchKey?: string
+  searchValue?: string
+  onSearchChange?: (value: string) => void
   filterPlaceholder?: string
   onAdd?: () => void
   onExport?: () => void
+  pageCount?: number
+  pagination?: PaginationState
+  onPaginationChange?: OnChangeFn<PaginationState>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
+  searchValue,
+  onSearchChange,
   filterPlaceholder,
   onAdd,
   onExport,
+  pageCount,
+  pagination,
+  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -51,9 +63,21 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
+  // If pagination props are provided, use them (controlled), otherwise use internal state (uncontrolled)
+  const isServerSide = typeof pageCount === 'number'
+
   const table = useReactTable({
     data,
     columns,
+    pageCount: isServerSide ? pageCount : undefined,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      ...(isServerSide && pagination ? { pagination } : {}),
+    },
+    manualPagination: isServerSide,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -62,12 +86,7 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
+    onPaginationChange: isServerSide ? onPaginationChange : undefined,
   })
 
   return (
@@ -75,6 +94,8 @@ export function DataTable<TData, TValue>({
       <DataTableToolbar 
         table={table} 
         searchKey={searchKey} 
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
         filterPlaceholder={filterPlaceholder}
         onAdd={onAdd}
         onExport={onExport}

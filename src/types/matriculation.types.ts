@@ -6,12 +6,15 @@ export interface MatriculationResult {
   userId: string;
   rollNumber: string;
   examYear: number;
+  schoolName: string;
+  schoolTownship: string;
+  schoolRegion: string;
   myanmar: number;
   english: number;
   mathematics: number;
   physics: number;
   chemistry: number;
-  biology: number;
+  biology?: number | null;
   totalScore: number;
   certificateUrl?: string | null;
   isVerified: boolean;
@@ -25,12 +28,15 @@ export interface MatriculationResult {
 export interface MatriculationInput {
   rollNumber: string;
   examYear: number;
+  schoolName: string;
+  schoolTownship: string;
+  schoolRegion: string;
   myanmar: number;
   english: number;
   mathematics: number;
   physics: number;
   chemistry: number;
-  biology: number;
+  biology?: number;
   certificateUrl?: string;
 }
 

@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { AdminOverviewChart } from "@/components/admin/admin-overview-chart";
 import { AdminUserDistributionChart } from "@/components/admin/admin-user-distribution-chart";
 import { AdminApplicationStatusChart } from "@/components/admin/admin-application-status-chart";
+import { AdminInterestChart } from "@/components/admin/admin-interest-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminDashboardPage() {
@@ -64,8 +65,22 @@ export default function AdminDashboardPage() {
       {/* Charts Row 2 */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         {stats && <AdminApplicationStatusChart stats={stats} />}
+        {stats && <AdminInterestChart stats={stats} />}
         
-        <Card className="col-span-4">
+        <Card className="col-span-4 lg:col-span-1 hidden">
+          {/* Hidden or moved System Status card to fit layout better if needed, 
+              or we can put it in a 3rd row. 
+              Let's put Interest Chart (col-span-3) next to Application Chart (col-span-4).
+              Wait, Application chart is usually col-span-3 or 4?
+              Let's check layout. Row 1: Overview (4) + User Dist (3) = 7.
+              Row 2: Application (3) + Interest (4) = 7? Or similar.
+          */}
+        </Card>
+      </div>
+
+      {/* System Status Row */}
+      <div className="grid gap-4 md:grid-cols-1">
+        <Card>
           <CardHeader>
             <CardTitle>System Status</CardTitle>
             <CardDescription>
