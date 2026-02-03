@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-images: {
-  remotePatterns: [
-    {
+  output: "standalone",
+  images: {
+    remotePatterns: [
+      // Development
+      {
         protocol: "http",
         hostname: "localhost",
         port: "9000",
@@ -15,8 +17,20 @@ images: {
         port: "9000",
         pathname: "/**",
       },
-  ],
-},
+      // Production - MinIO storage (update with your actual domain)
+      {
+        protocol: "https",
+        hostname: "storage.tu-recommend.online",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "minio",
+        port: "9000",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

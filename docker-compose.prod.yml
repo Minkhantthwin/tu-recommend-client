@@ -1,0 +1,15 @@
+services:
+  client:
+    image: ghcr.io/minkhantthwin/tu-recommend-client:latest
+    container_name: tu-recommend-client
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - tu-recommend-network
+
+networks:
+  tu-recommend-network:
+    external: true
